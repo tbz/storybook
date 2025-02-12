@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import React from 'react';
 
-import { type API_LeafEntry, Addon_TypesEnum } from '@storybook/core/types';
+import { Addon_TypesEnum } from '@storybook/core/types';
 
 import { Consumer } from '@storybook/core/manager-api';
 import type { API, Combo } from '@storybook/core/manager-api';
@@ -16,8 +16,9 @@ const createPanelActions = memoize(1)((api) => ({
   togglePosition: () => api.togglePanelPosition(),
 }));
 
-const getPanels = memoize(1)((api: API, story: API_LeafEntry) => {
+const getPanels = memoize(1)((api: API) => {
   const allPanels = api.getElements(Addon_TypesEnum.PANEL);
+  const story = api.getCurrentStoryData();
 
   if (!allPanels || !story || story.type !== 'story') {
     return allPanels;
@@ -44,7 +45,7 @@ const getPanels = memoize(1)((api: API, story: API_LeafEntry) => {
 });
 
 const mapper = ({ state, api }: Combo) => ({
-  panels: getPanels(api, api.getCurrentStoryData()),
+  panels: getPanels(api),
   selectedPanel: api.getSelectedPanel(),
   panelPosition: state.layout.panelPosition,
   actions: createPanelActions(api),
